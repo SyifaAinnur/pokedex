@@ -2,28 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+*,
+::after,
+::before {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+:root {
+  --foreground: 0, 0, 0;
+  --background: 0, 0%, 100%;
+
+  --primary: 180, 44%, 91%;
+  --secondary: 310, 26%, 84%;
+  --tertiary: 0, 1%, 96%;
+  --quaternary: 0, 0%, 85%;
+  --quinary: 0, 2%, 25%;
+  --quinary-light: 0, 0%, 22%;
+  --quinary-dark: 0, 0%, 10%;
+
+  --normal: 224, 15%, 53%;
+  --normal-light: 219, 27%, 88%;
+  --fighting: 12, 100%, 69%;
+  --fighting-light: 26, 98%, 74%;
+  --flying: 207, 15%, 61%;
+  --flying-light: 192, 17%, 94%;
+  --poison: 292, 30%, 67%;
+  --poison-light: 184, 44%, 64%;
+  --ground: 34, 62%, 53%;
+  --ground-light: 34, 100%, 79%;
+  --rock: 29, 67%, 35%;
+  --rock-light: 22, 16%, 64%;
+  --bug: 138, 47%, 44%;
+  --bug-light: 55, 43%, 50%;
+  --ghost: 263, 40%, 47%;
+  --ghost-light: 283, 44%, 52%;
+  --steel: 182, 15%, 67%;
+  --steel-light: 182, 9%, 76%;
+  --fire: 0, 65%, 63%;
+  --fire-light: 23, 100%, 77%;
+  --water: 219, 75%, 65%;
+  --water-light: 189, 96%, 53%;
+  --grass: 178, 77%, 48%;
+  --grass-light: 155, 71%, 75%;
+  --electric: 44, 100%, 60%;
+  --electric-light: 43, 92%, 86%;
+  --psychic: 294, 48%, 65%;
+  --psyshic-light: 29, 99%, 68%;
+  --ice: 190, 94%, 51%;
+  --ice-light: 177, 97%, 85%;
+  --dragon: 213, 51%, 65%;
+  --dragon-light: 179, 44%, 64%;
+  --dark: 201, 0%, 44%;
+  --fairy: 352, 71%, 77%;
+  --fairy-light: 353, 100%, 93%;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  -webkit-font-smoothing: antialiased;
+  overflow-y: scroll;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 @layer utilities {
