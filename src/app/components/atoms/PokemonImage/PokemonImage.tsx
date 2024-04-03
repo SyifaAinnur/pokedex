@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getPlaiceholder } from "plaiceholder";
+// import { getPlaiceholder } from "plaiceholder";
 
 interface PokemonImageProps {
   src: string;
@@ -11,13 +11,13 @@ export default async function PokemonImage({ src, name }: PokemonImageProps) {
     return Buffer.from(await res.arrayBuffer());
   });
 
-  const { base64 } = await getPlaiceholder(buffer);
+//   const { base64 } = await getPlaiceholder(buffer);
   return (
     <Image
       src={src}
       alt={name}
       placeholder="blur"
-      blurDataURL={base64}
+    //   blurDataURL={base64}
       objectFit="cover"
       width={512}
       height={512}
