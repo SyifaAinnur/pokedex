@@ -102,3 +102,108 @@ export async function fetchPokemonType(type: string) {
         console.error("Error fetching data", error);
     }
 }
+
+
+export async function fetchSearchedPokemon(name: string) {
+    try {
+      const url = `${API_URL}/pokemon/${name}`;
+      const data = await fetchDataPokemon(url);
+      const pokemonId = data.id;
+      const primaryType = data.types[0].type.name;
+      const imageUrl = data.sprites.other.home.front_default;
+  
+      return {
+        id: pokemonId,
+        name,
+        type: primaryType,
+        url: imageUrl,
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  export async function fetchType(endpoint: string) {
+    try {
+      const url = `${endpoint}`;
+      const data = await fetchDataPokemon(url);
+      const doubleDamageFrom = data.damage_relations.double_damage_from;
+      const halfDamageFrom = data.damage_relations.half_damage_from;
+      const noDamageFrom = data.damage_relations.no_damage_from;
+  
+      return [doubleDamageFrom, halfDamageFrom, noDamageFrom];
+    } catch (error) {
+      return null;
+    }
+  }
+
+  export async function fetchPokemonDetails(name: string) {
+    try {
+      const url = `${API_URL}/pokemon/${name}`;
+      const data = await fetchDataPokemon(url);
+      const pokemonStats = data.stats;
+      const pokemonId = data.id;
+      const height = data.height / 10;
+      const weight = data.weight / 10;
+      const primaryType = data.types[0].type.name;
+      const types = data.types;
+      const imageUrl = data.sprites.other.home.front_default;
+  
+      return {
+        pokemonStats,
+        pokemonId,
+        height,
+        weight,
+        primaryType,
+        types,
+        imageUrl,
+        name,
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  export async function fetchEvolutionChain(id: number) {
+    try {
+      const speciesUrl = `${API_URL}/pokemon-species/${id}`;
+      const speciesData = await fetchDataPokemon(speciesUrl);
+      const evolutionChainUrl = speciesData.evolution_chain.url;
+      const evolutionChainData = await fetchDataPokemon(evolutionChainUrl);
+  
+      const firstEvolution = evolutionChainData.chain.species.name;
+      const secondEvolution =
+        evolutionChainData.chain.evolves_to[0]?.species.name;
+      const thirdEvolution =
+        evolutionChainData.chain.evolves_to[0]?.evolves_to[0]?.species.name;
+  
+      const result = [firstEvolution];
+      if (secondEvolution) result.push(secondEvolution);
+      if (thirdEvolution) result.push(thirdEvolution);
+  
+      const promises = result.map(async (name) => {
+        return await fetchPokemonDetails(name);
+      });
+  
+      const pokemonData = await Promise.all(promises);
+  
+      // Return name and images
+      return pokemonData.map((item) => {
+        return { name: item?.name, url: item?.imageUrl };
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  export async function fetchFlavorText(id: number) {
+    try {
+      const speciesUrl = `${API_URL}/pokemon-species/${id}`;
+      const speciesData = await fetchDataPokemon(speciesUrl);
+      const flavorTextEntries = speciesData.flavor_text_entries[1].flavor_text;
+  
+      return flavorTextEntries;
+    } catch (error) {
+      console.error(error);
+    }
+  }

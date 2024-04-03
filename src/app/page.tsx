@@ -4,7 +4,7 @@ import { fetchPokemonList, fetchPokemonName, fetchPokemonType, getTypes } from "
 import { PokemonList } from "./types/pokemon";
 
 export default async function Home() {
-  const pokemonList = await fetchPokemonList(0, );
+  const pokemonList = await fetchPokemonList(0, 20);
   const pokemonNames = await fetchPokemonName();
   return (
     <main className="flex flex-col items-center justify-between">
