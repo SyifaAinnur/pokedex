@@ -30,10 +30,10 @@ export default function CardList({
           return (
             <CardListItem key={i}>
               <Card
-                name={pokemon.name}
-                url={pokemon.url}
-                id={pokemon.id}
-                type={pokemon.type}
+                name={pokemon?.name}
+                url={pokemon?.url}
+                id={pokemon?.id}
+                type={pokemon?.type}
               />
             </CardListItem>
           );

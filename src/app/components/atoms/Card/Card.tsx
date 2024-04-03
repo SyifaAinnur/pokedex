@@ -28,7 +28,7 @@ export default function Card({ name, url, id, type }: PokemonList) {
             <span className="absolute bottom-[-70px] right-[-30px] md:bottom-[-60px] md:right-[-20px]">
               <Logo />
               <Image
-                src={url}
+                src={url ?? Logo}
                 alt={name}
                 objectFit="cover"
                 width={75}
