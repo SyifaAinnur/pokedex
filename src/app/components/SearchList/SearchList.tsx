@@ -182,6 +182,7 @@ export default function SearchData({ pokemonList, pokemonName }: PokemonListProp
                                 >
                                     {type.map((type) => (
                                         <button
+                                        key={type.name}
                                             className={clsx(
                                                 `capitalize text-black rounded flex items-center w-max px-3 py-1 shadow-md h-min opacity-50 transition-opacity duration-250`,
                                                 cardPillTheme(type?.name)
