@@ -14,7 +14,7 @@ async function fetchDataPokemon(url: string) {
 
 export async function fetchPokemonName() {
     try {
-        const url = `${API_URL}/pokemon`;
+        const url = `${API_URL}/pokemon/?limit=1000`;
         const data = await fetchDataPokemon(url);
         return data.results;
     } catch (error) {

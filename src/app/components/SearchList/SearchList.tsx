@@ -4,7 +4,7 @@ import { Pokemon, PokemonList } from "@/app/types/pokemon";
 import { useRef, useState } from "react";
 import Icon from "./Icon";
 import { useDebouncedCallback } from "use-debounce";
-import { fetchPokemonList, fetchPokemonType, fetchSearchPokemon } from "@/app/libs/ApiPokemon";
+import { fetchPokemonList, fetchPokemonType, fetchSearchPokemon, fetchSearchedPokemon } from "@/app/libs/ApiPokemon";
 import { CardGrid, CardListItem } from "../atoms/CardGrid/CardGrid";
 import { CardSkeleton } from "../common/Header/skeletonsCard";
 import CardList from "../common/CardList/CardList";
@@ -60,52 +60,54 @@ export default function SearchData({ pokemonList, pokemonName }: PokemonListProp
 
     const searchFilter = (searchableNames: Pokemon[]) => {
         return searchableNames.filter((pokemon) =>
-            pokemon.name.toLowerCase().includes(inputValue.toLowerCase())
+          pokemon.name.toLowerCase().includes(inputValue.toLowerCase())
         );
-    }
+      };
 
-    const debounceSearch = useDebouncedCallback(
+    const debounceHandleInputChange = useDebouncedCallback(
         async (value: string) => {
-            if (value.length < 2) {
-                setNoPokemon(false);
+          if (value.length < 2) {
+            setNoPokemon(false);
+            setSearchList([]);
+            return;
+          }
+          const filteredPokemonNames = searchFilter(pokemonName);
+          if (value.length >= 2) {
+            setIsLoading(true);
+            setNoPokemon(false);
+            if (filteredPokemonNames.length > 0) {
+              const pokemonNames = filteredPokemonNames.map((item) => item.name);
+              setNumberOfSearch(pokemonNames.length);
+              try {
+                const promises = pokemonNames.map(async (name) => {
+                  return await fetchSearchedPokemon(name);
+                });
+    
+                const pokemonData = await Promise.all(promises);
+    
+                setSearchList(pokemonData as PokemonList[]);
+    
+                setIsLoading(false);
+              } catch (error) {
+                setIsLoading(false);
+                setNoPokemon(true);
                 setSearchList([]);
-                return;
+              }
+            } else {
+              setIsLoading(false);
+              setNoPokemon(true);
+              setSearchList([]);
             }
-            const filterPokemonName = searchFilter(pokemonName);
-            if (value.length >= 2) {
-                setIsLoading(true);
-                setNoPokemon(false);
-                if (filterPokemonName.length > 0) {
-                    const pokemonName = filterPokemonName.map((pokemon) => pokemon.name);
-                    setNumberOfSearch(pokemonName.length);
-                    try {
-                        const promises = pokemonName.map(async (name) => {
-                            return await fetchSearchPokemon(name);
-                        })
-
-                        const pokemonData = await Promise.all(promises);
-
-                        setSearchList(pokemonData as PokemonList[]);
-                        setIsLoading(false);
-                    } catch (error) {
-                        setIsLoading(false);
-                        setNoPokemon(true);
-                        setSearchList([]);
-                    }
-                } else {
-                    setIsLoading(false);
-                    setNoPokemon(true);
-                    setSearchList([]);
-                }
-            }
+          }
         },
         500
-    )
-    const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      );
+      const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setInputValue(value);
-        debounceSearch(value);
-    }
+        debounceHandleInputChange(value);
+      };
+    
 
     const filterType = async (type: string) => {
         if (type === "") {
@@ -126,9 +128,10 @@ export default function SearchData({ pokemonList, pokemonName }: PokemonListProp
     const loadMorePokemon = async () => {
         try {
             setLoadMore(true);
-            if (offset + DEFAULT_POKEMON_LIST > pokemon.length) {
-                setOffset(offset + (pokemon.length - offset));
-                const apiPokemon = await fetchPokemonList(offset, pokemon.length - offset);
+            if (offset + DEFAULT_POKEMON_LIST > 900) {
+                console.log("length", pokemon.length);
+                setOffset(offset + (900 - offset));
+                const apiPokemon = await fetchPokemonList(offset, 900 - offset);
                 setPokemon([...pokemon, ...(apiPokemon as PokemonList[])]);
 
             } else {
@@ -228,7 +231,9 @@ export default function SearchData({ pokemonList, pokemonName }: PokemonListProp
                 )}
 
                 {inputValue.length < 2 &&
-                    searchList.length === 0 && (
+                    searchList.length === 0 && 
+                    pokemon.length !== 900 &&
+                    (
                         <button
                             onClick={loadMorePokemon}
                             className="bg-quinary-dark py-4 px-8 rounded-2xl font-bold text-background mb-8 hover:bg-slate-600 transition-colors w-[147.5px]"
